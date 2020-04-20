@@ -116,12 +116,17 @@ CSS背景：
       margin:0;
     }
   7、外边距塌陷
-    有浮动和定位就不会产生这个问题
+    有浮动和定位(绝对定位和固定定位)就不会产生这个问题
     相邻盒子垂直外边距合并问题    解决方法：只给其中一个盒子添加垂直外边距
     嵌套块元素垂直外边距合并问题  1、给父级块元素定义上边框   2、给父级块元素一个padding-top   3、给父级块元素添加overflow: hidden(常用)  等等
   8、优先使用级   width(没有问题，但是只有它不能达成很多效果)>padding(会改变盒子大小)>margin(会产生塌陷问题)
   9、取消列表样式： li { list-style:none; }
   10、圆角边框   border-radius:100px(半径值)或者50%(圆)  高度的一半可以成圆角矩形
+        border-top-left-radius:  左上角
+        border-top-right-radius:  右上角
+        border-bottom-left-radius:  左下角
+        border-bottom-right-radius:  右下角
+        border-radius: 左上 右上 右下 左下
   11、盒子阴影   box-shadow
       h-shadow(水平阴影,可以负值,必填),v-shadow(垂直阴影，可以负值,必填),blur(虚实),spread(影子大小),color(颜色,可以用rgba),inset(内阴影,默认为outset但不能写)
 
@@ -165,4 +170,83 @@ CSS背景：
           .clearfix {
             *zoom: 1;
           }
-    3)定位:
+    3)定位:将盒子定位在某一个位置，漂浮在标准流和浮动的上面
+      如果子盒子用绝对定位，父盒子一定要用相对定位
+      定位的盒子很多都要单写宽度
+      定位 = 定位模式 + 边偏移
+      选择器 {position：定位模式  
+              static(静态,相当于不要定位,没有边偏移,几乎不用) 
+              relative(相对,相对于原来的位置移动,在标准流的位置继续占有) 
+              absolute(绝对,如果父级没有定位,以浏览器为准移动;如果有定位则以最近的祖先位置为准,不保留原来的位置) 
+              fixed(固定,完全脱标,不占位置;只参照浏览器的可视窗口,跟父级没有关系,不随滚动条滚动)
+              left:边偏移
+              right:边偏移
+              top:边偏移
+              bottom:边偏移
+            }
+      
+      应用：
+        1、绝对定位的水平居中(margin:auto不行)
+          left:50%; margin-left:-(自身盒子的一半)px;
+        2、绝对定位的垂直居中
+          top:50%;  margin-top:-(自身盒子的一半)px;
+        3、还有等等
+
+      堆叠顺序： 可以调整盒子堆叠顺序,只用于定位(必须有position才能用)
+        z-index: 正整数、负整数、0   越大越靠上  不能加单位  值相同则后来居上
+      绝对定位(固定定位)也可以转换为类似行内块元素的功能
+
+
+CSS高级技巧
+  1、元素的显示与隐藏
+    1) display:none; 隐藏(不保留物理空间(位置))   display:block 显示
+    2) visibility:
+      inherit  继承上一个父对象的可见性
+      visible  可见
+      collapse 主要用于隐藏表格的行或列。在表格外使用即等于hidden
+      hidden   隐藏  保留物理位置
+    3) overflow: 对溢出部分的操作
+      visible 可见  不添加滚动条也不剪切
+      hidden  隐藏  超出部分隐藏
+      scroll  不管是否超出  总显示滚动条 (不常用太丑了)
+      auto    超出时显示滚动条 (不常用太丑了)
+  2、界面样式
+    1)鼠标样式
+      cursor：
+        default: 默认
+        pointer: 小手
+        move: 移动  商品放大镜效果
+        text: 文本  
+        not-allowed: 禁止
+    2)轮廓线
+      outline:0  或者 outline: none   一般只用来取消轮廓线  轮廓线不用
+    3)防止拖拽文本域
+      <textarea style="resize:none;"></textarea>
+    4)垂直对齐 (只针对行内块元素和行内元素)  通常用来控制文字图片表单对齐
+      vertical-align: baseline(默认)  top  middle  bottom
+      去除图片底部的空白缝隙的方法 1、只要不是基线对齐(常用)   2、或者把img改成块级元素
+    5)溢出的文字省略号
+      white-space: nowrap;(强制一行显示文本)  还有一个值是normal(默认换行)  除非遇到br
+      overfolw: hidden; 
+      text-overflow: ellipsis;(用省略号代替)   还有一个值是clip(文字裁切)
+    6)精灵技术(sprite)   用来减少请求的次数，提高页面的加载速度
+      用background-position找到需要图片的位置  负值  主要针对背景图片
+    7)滑动门技术(为了背景图自适应文字的多少)   微信主页的导航栏
+      原理：用背景位置和padding撑开盒子
+      方法:1、a设置背景左侧，padding撑开合适的宽度
+           2、span设置背景右侧, paddng撑开合适宽度 剩下由文字继续撑开宽度。
+           3、之所以a包含span就是因为 整个导航都是可以点击的
+    8)margin负值之美
+      1、负边距+定位可以实现水平垂直居中
+      2、压住盒子相邻的边框  margin-left: -1px; margin-top:-1px;  浮动的盒子紧贴在一起
+      3、突出显示某一个盒子  用相对定位 positon: relative;
+    9)CSS三角形之美
+      div {   // 上边框构成的三角形
+        width:0;
+        height:0;
+        border-style: solid;
+        border-width: 10px;
+        border-color: red transparent transparent transparent;
+        font-size:0;
+        line-height:0;
+      }  
